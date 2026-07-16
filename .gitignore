@@ -1,0 +1,12 @@
+# Build output
+/build/
+/out/
+
+# whisper models are downloaded separately (too big for git)
+/models/*.bin
+
+# Visual Studio / CMake files
+.vs/
+*.user
+CMakeCache.txt
+CMakeFiles/
