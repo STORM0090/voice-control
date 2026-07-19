@@ -24,3 +24,18 @@ target_include_directories(VoiceControl PRIVATE src)
 
 # COM (CoInitializeEx, CoCreateInstance) lives in ole32.
 target_link_libraries(VoiceControl PRIVATE ole32 whisper)
+
+# With CUDA the exe needs cuBLAS/cudart DLLs at runtime, so copy them
+# next to it. Configure with -DGGML_CUDA=ON to enable GPU support.
+if (GGML_CUDA)
+    file(GLOB CUDA_DLLS
+        "$ENV{CUDA_PATH}/bin/x64/cudart64_*.dll"
+        "$ENV{CUDA_PATH}/bin/x64/cublas64_*.dll"
+        "$ENV{CUDA_PATH}/bin/x64/cublasLt64_*.dll"
+    )
+    foreach(dll ${CUDA_DLLS})
+        add_custom_command(TARGET VoiceControl POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${dll}" "$<TARGET_FILE_DIR:VoiceControl>")
+    endforeach()
+endif()

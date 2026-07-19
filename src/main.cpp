@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <chrono>
 
 #include "common/AudioTypes.h"
 #include "common/ThreadSafeQueue.h"
@@ -56,7 +57,13 @@ int main(int argc, char** argv) {
                 float seconds = (float)segment.size() / kSampleRate;
                 cout << "Speech ended: " << seconds << " s -> ";
                 cout.flush();
-                cout << "\"" << transcriber.transcribe(segment) << "\"\n";
+
+                auto t0 = chrono::steady_clock::now();
+                string text = transcriber.transcribe(segment);
+                auto t1 = chrono::steady_clock::now();
+                long ms = chrono::duration_cast<chrono::milliseconds>(t1 - t0).count();
+
+                cout << "\"" << text << "\" (" << ms << " ms)\n";
             }
         }
     } catch (const exception& e) {

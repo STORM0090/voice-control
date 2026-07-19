@@ -22,7 +22,7 @@ The audio goes through a few steps:
 
 - [x] Stage 1 - audio capture, shows a live volume bar
 - [x] Stage 2 - voice activity detection (finds where speech starts and ends)
-- [x] Stage 3 - speech to text with whisper.cpp (CPU for now, CUDA next)
+- [x] Stage 3 - speech to text with whisper.cpp (CPU or CUDA)
 - [ ] Stage 4 - command parser
 - [ ] Stage 5 - actions
 - [ ] Stage 6 - voice reply
@@ -41,4 +41,7 @@ cmake --build build --config Release
 build\Release\VoiceControl.exe
 ```
 
-Speak a short command and it gets printed as text.
+With an NVIDIA GPU and the CUDA Toolkit installed, add `-DGGML_CUDA=ON` to the
+first cmake command to run the speech recognition on the GPU.
+
+Speak a short command and it gets printed as text with the recognition time.
