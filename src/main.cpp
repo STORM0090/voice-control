@@ -11,6 +11,7 @@
 #include "vad/Vad.h"
 #include "stt/Transcriber.h"
 #include "command/CommandParser.h"
+#include "action/ActionExecutor.h"
 
 using namespace std;
 
@@ -86,6 +87,7 @@ int main(int argc, char** argv) {
 
         Vad vad;
         CommandParser parser;
+        ActionExecutor executor;
         bool wasSpeaking = false;
 
         cout << "Listening... speak into the microphone (Ctrl+C to quit).\n";
@@ -112,10 +114,12 @@ int main(int argc, char** argv) {
                 cout << "\"" << text << "\" (" << ms << " ms)\n";
 
                 Command cmd = parser.parse(text);
-                if (cmd.type != CMD_NONE) {
+                if (cmd.type == CMD_NONE) {
+                    cout << "  -> not a known command\n";
+                } else if (executor.execute(cmd)) {
                     cout << "  -> " << cmd.confirmation << "\n";
                 } else {
-                    cout << "  -> not a known command\n";
+                    cout << "  -> recognized, but not executed\n";
                 }
             }
         }
