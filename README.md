@@ -23,7 +23,7 @@ The audio goes through a few steps:
 - [x] Stage 1 - audio capture, shows a live volume bar
 - [x] Stage 2 - voice activity detection (finds where speech starts and ends)
 - [x] Stage 3 - speech to text with whisper.cpp (CPU or CUDA)
-- [ ] Stage 4 - command parser
+- [x] Stage 4 - command parser (keyword rules, `--test` runs its checks)
 - [ ] Stage 5 - actions
 - [ ] Stage 6 - voice reply
 

@@ -10,8 +10,49 @@
 #include "audio/AudioCapture.h"
 #include "vad/Vad.h"
 #include "stt/Transcriber.h"
+#include "command/CommandParser.h"
 
 using namespace std;
+
+// Quick check that the parser understands typical whisper output.
+// Run with: VoiceControl.exe --test
+static int runParserTests() {
+    struct Case {
+        string text;
+        int expected;
+    };
+    vector<Case> cases = {
+        {" Open Chrome.", CMD_OPEN_CHROME},
+        {"launch chrome", CMD_OPEN_CHROME},
+        {" Open Home.", CMD_OPEN_CHROME},
+        {"LOUDER!", CMD_VOLUME_UP},
+        {" Volume up.", CMD_VOLUME_UP},
+        {"quieter", CMD_VOLUME_DOWN},
+        {" Mute.", CMD_MUTE_TOGGLE},
+        {"unmute", CMD_MUTE_TOGGLE},
+        {" Next track.", CMD_NEXT_TRACK},
+        {"skip", CMD_NEXT_TRACK},
+        {" Previous song.", CMD_PREV_TRACK},
+        {" Play.", CMD_PLAY_PAUSE},
+        {"pause", CMD_PLAY_PAUSE},
+        {" soundtrack ", CMD_NONE},       // "track" inside a word must not match
+        {" Change music.", CMD_NONE},
+        {"", CMD_NONE},
+    };
+
+    CommandParser parser;
+    int failed = 0;
+    for (const auto& c : cases) {
+        Command cmd = parser.parse(c.text);
+        if (cmd.type != c.expected) {
+            cout << "FAIL: \"" << c.text << "\" -> got " << cmd.type
+                 << ", expected " << c.expected << "\n";
+            failed++;
+        }
+    }
+    cout << (cases.size() - failed) << "/" << cases.size() << " parser tests passed\n";
+    return failed == 0 ? 0 : 1;
+}
 
 // The exe can be started from the project root or from build\Release,
 // so look for the model in a few places.
@@ -31,6 +72,10 @@ static string findModel() {
 }
 
 int main(int argc, char** argv) {
+    if (argc > 1 && string(argv[1]) == "--test") {
+        return runParserTests();
+    }
+
     try {
         string modelPath = (argc > 1) ? argv[1] : findModel();
         Transcriber transcriber(modelPath);
@@ -40,6 +85,7 @@ int main(int argc, char** argv) {
         capture.start();
 
         Vad vad;
+        CommandParser parser;
         bool wasSpeaking = false;
 
         cout << "Listening... speak into the microphone (Ctrl+C to quit).\n";
@@ -64,6 +110,13 @@ int main(int argc, char** argv) {
                 long ms = chrono::duration_cast<chrono::milliseconds>(t1 - t0).count();
 
                 cout << "\"" << text << "\" (" << ms << " ms)\n";
+
+                Command cmd = parser.parse(text);
+                if (cmd.type != CMD_NONE) {
+                    cout << "  -> " << cmd.confirmation << "\n";
+                } else {
+                    cout << "  -> not a known command\n";
+                }
             }
         }
     } catch (const exception& e) {
