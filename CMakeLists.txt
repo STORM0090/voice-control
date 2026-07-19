@@ -17,6 +17,7 @@ add_executable(VoiceControl
     src/audio/Resampler.cpp
     src/vad/Vad.cpp
     src/stt/Transcriber.cpp
+    src/command/CommandParser.cpp
 )
 
 # Let the code write includes like "audio/AudioCapture.h" and "common/AudioTypes.h".
