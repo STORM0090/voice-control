@@ -1,5 +1,6 @@
 # Build output
 /build/
+/build-cuda/
 /out/
 
 # whisper models are downloaded separately (too big for git)
