@@ -25,7 +25,7 @@ The audio goes through a few steps:
 - [x] Stage 3 - speech to text with whisper.cpp (CPU or CUDA)
 - [x] Stage 4 - command parser (keyword rules, `--test` runs its checks)
 - [x] Stage 5 - actions (open Chrome, media keys, volume, mute)
-- [ ] Stage 6 - voice reply
+- [x] Stage 6 - voice reply with Windows SAPI
 
 ## Build
 

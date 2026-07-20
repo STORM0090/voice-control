@@ -12,6 +12,7 @@
 #include "stt/Transcriber.h"
 #include "command/CommandParser.h"
 #include "action/ActionExecutor.h"
+#include "tts/Speaker.h"
 
 using namespace std;
 
@@ -90,6 +91,7 @@ int main(int argc, char** argv) {
         Vad vad;
         CommandParser parser;
         ActionExecutor executor;
+        Speaker speaker;
         bool wasSpeaking = false;
 
         cout << "Listening... speak into the microphone (Ctrl+C to quit).\n";
@@ -120,6 +122,11 @@ int main(int argc, char** argv) {
                     cout << "  -> not a known command\n";
                 } else if (executor.execute(cmd)) {
                     cout << "  -> " << cmd.confirmation << "\n";
+                    speaker.say(cmd.confirmation);
+                    // The mic hears the assistant talking, and a confirmation
+                    // like "Volume up" is a command itself. Drop those frames
+                    // so it does not react to its own voice.
+                    frames.clear();
                 } else {
                     cout << "  -> recognized, but not executed\n";
                 }

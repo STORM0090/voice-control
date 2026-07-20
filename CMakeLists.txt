@@ -19,6 +19,7 @@ add_executable(VoiceControl
     src/stt/Transcriber.cpp
     src/command/CommandParser.cpp
     src/action/ActionExecutor.cpp
+    src/tts/Speaker.cpp
 )
 
 # Let the code write includes like "audio/AudioCapture.h" and "common/AudioTypes.h".

@@ -27,6 +27,13 @@ public:
         return item;
     }
 
+    // Throws away everything that is waiting in the queue.
+    void clear() {
+        lock_guard<mutex> lock(m);
+        queue<T> empty;
+        data.swap(empty);
+    }
+
 private:
     queue<T> data;
     mutex m;
