@@ -104,6 +104,9 @@ int main(int argc, char** argv) {
         Speaker speaker;
         bool wasSpeaking = false;
 
+        // The recognizer works better when it knows what to listen for.
+        transcriber.setPrompt(parser.vocabulary());
+
         cout << "Listening... speak into the microphone (Ctrl+C to quit).\n";
 
         while (true) {

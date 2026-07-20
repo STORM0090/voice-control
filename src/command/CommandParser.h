@@ -22,6 +22,9 @@ public:
     CommandParser();
     Command parse(const string& rawText);
 
+    // All trigger phrases in one string, to hint the speech recognizer.
+    string vocabulary() const;
+
 private:
     vector<CommandRule> rules;
 };

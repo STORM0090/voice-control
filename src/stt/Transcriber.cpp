@@ -20,6 +20,10 @@ Transcriber::~Transcriber() {
     }
 }
 
+void Transcriber::setPrompt(const string& text) {
+    prompt = text;
+}
+
 string Transcriber::transcribe(const vector<float>& audio) {
     // whisper does not like very short clips, so pad quiet audio up to 1 second.
     vector<float> input = audio;
@@ -37,6 +41,11 @@ string Transcriber::transcribe(const vector<float>& audio) {
     params.print_realtime = false;
     params.print_timestamps = false;
     params.print_special = false;
+    if (!prompt.empty()) {
+        // Short isolated words are easy to misread, so give whisper the
+        // list of words we actually expect.
+        params.initial_prompt = prompt.c_str();
+    }
 
     if (whisper_full(ctx, params, input.data(), (int)input.size()) != 0) {
         throw runtime_error("whisper_full failed");

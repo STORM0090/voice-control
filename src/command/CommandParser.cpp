@@ -71,3 +71,16 @@ Command CommandParser::parse(const string& rawText) {
 
     return Command(); // type stays CMD_NONE
 }
+
+string CommandParser::vocabulary() const {
+    string words;
+    for (const auto& rule : rules) {
+        for (const auto& phrase : rule.phrases) {
+            if (!words.empty()) {
+                words += ", ";
+            }
+            words += phrase;
+        }
+    }
+    return words;
+}

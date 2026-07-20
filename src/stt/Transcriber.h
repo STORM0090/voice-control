@@ -17,8 +17,12 @@ public:
 
     string transcribe(const vector<float>& audio);
 
+    // Words whisper should expect. Nudges it towards our commands.
+    void setPrompt(const string& text);
+
 private:
     whisper_context* ctx;
+    string prompt;
 };
 
 #endif
