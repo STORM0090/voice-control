@@ -24,7 +24,7 @@ The audio goes through a few steps:
 - [x] Stage 2 - voice activity detection (finds where speech starts and ends)
 - [x] Stage 3 - speech to text with whisper.cpp (CPU or CUDA)
 - [x] Stage 4 - command parser (keyword rules, `--test` runs its checks)
-- [ ] Stage 5 - actions
+- [x] Stage 5 - actions (open Chrome, media keys, volume, mute)
 - [ ] Stage 6 - voice reply
 
 ## Build

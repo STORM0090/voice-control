@@ -27,6 +27,17 @@ static bool tapKey(WORD vk) {
     return SendInput(2, inputs, sizeof(INPUT)) == 2;
 }
 
+// One press of the volume key changes it by about 2%, which is barely
+// audible, so repeat it a few times for a noticeable step.
+static bool tapKeyTimes(WORD vk, int times) {
+    for (int i = 0; i < times; i++) {
+        if (!tapKey(vk)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool ActionExecutor::execute(const Command& cmd) {
     switch (cmd.type) {
     case CMD_OPEN_CHROME:
@@ -37,7 +48,13 @@ bool ActionExecutor::execute(const Command& cmd) {
         return tapKey(VK_MEDIA_PREV_TRACK);
     case CMD_PLAY_PAUSE:
         return tapKey(VK_MEDIA_PLAY_PAUSE);
+    case CMD_VOLUME_UP:
+        return tapKeyTimes(VK_VOLUME_UP, 5);
+    case CMD_VOLUME_DOWN:
+        return tapKeyTimes(VK_VOLUME_DOWN, 5);
+    case CMD_MUTE_TOGGLE:
+        return tapKey(VK_VOLUME_MUTE);
     default:
-        return false; // the other commands come in the next steps
+        return false; // every command is handled now
     }
 }
