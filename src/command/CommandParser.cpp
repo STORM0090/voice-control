@@ -26,14 +26,17 @@ static string normalize(const string& raw) {
 CommandParser::CommandParser() {
     // Adding an app is one line here. The last field is passed to
     // ShellExecute, so it can be an exe name or a URI like "spotify:".
-    // "open home" is here on purpose: whisper often hears "chrome" as "home".
-    rules.push_back({{"open chrome", "launch chrome", "start chrome", "open home"},
+    // Matching on the app name alone, without "open", is on purpose:
+    // whisper often gets the name right but turns "open" into something
+    // else ("and calculator", "loves potify").
+    // "open home" is a fallback: whisper often hears "chrome" as "home".
+    rules.push_back({{"chrome", "browser", "open home"},
                      CMD_OPEN_APP, "Opening Chrome", "chrome.exe"});
-    rules.push_back({{"open spotify", "launch spotify", "open music"},
+    rules.push_back({{"spotify", "open music"},
                      CMD_OPEN_APP, "Opening Spotify", "spotify:"});
-    rules.push_back({{"open notepad", "open notes"},
+    rules.push_back({{"notepad", "notes"},
                      CMD_OPEN_APP, "Opening Notepad", "notepad.exe"});
-    rules.push_back({{"open calculator", "open calc"},
+    rules.push_back({{"calculator", "calc"},
                      CMD_OPEN_APP, "Opening Calculator", "calc.exe"});
     // "plus"/"minus" are short and easy to pronounce, so whisper hears them
     // reliably - unlike "louder"/"quieter", which it often mangles.

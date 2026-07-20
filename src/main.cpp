@@ -29,7 +29,10 @@ static int runParserTests() {
         {"launch chrome", CMD_OPEN_APP, "chrome.exe"},
         {" Open Home.", CMD_OPEN_APP, "chrome.exe"},
         {" Open Spotify.", CMD_OPEN_APP, "spotify:"},
+        {" Open music.", CMD_OPEN_APP, "spotify:"},
         {"open calculator", CMD_OPEN_APP, "calc.exe"},
+        {" and calculator.", CMD_OPEN_APP, "calc.exe"}, // whisper mangled "open"
+        {" Open Notepad.", CMD_OPEN_APP, "notepad.exe"},
         {"LOUDER!", CMD_VOLUME_UP},
         {" Volume up.", CMD_VOLUME_UP},
         {"plus", CMD_VOLUME_UP},
