@@ -28,9 +28,11 @@ CommandParser::CommandParser() {
     // "open home" is here on purpose: whisper often hears "chrome" as "home".
     rules.push_back({{"open chrome", "launch chrome", "start chrome", "open home"},
                      CMD_OPEN_CHROME, "Opening Chrome"});
-    rules.push_back({{"volume up", "louder", "turn it up"},
+    // "plus"/"minus" are short and easy to pronounce, so whisper hears them
+    // reliably - unlike "louder"/"quieter", which it often mangles.
+    rules.push_back({{"volume up", "louder", "turn it up", "plus"},
                      CMD_VOLUME_UP, "Volume up"});
-    rules.push_back({{"volume down", "quieter", "turn it down"},
+    rules.push_back({{"volume down", "quieter", "turn it down", "minus"},
                      CMD_VOLUME_DOWN, "Volume down"});
     rules.push_back({{"mute", "unmute", "sound off", "sound on"},
                      CMD_MUTE_TOGGLE, "Mute toggled"});
