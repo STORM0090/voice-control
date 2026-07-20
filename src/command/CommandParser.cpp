@@ -24,10 +24,17 @@ static string normalize(const string& raw) {
 }
 
 CommandParser::CommandParser() {
-    // Adding a command = one line here (plus a case in the executor).
+    // Adding an app is one line here. The last field is passed to
+    // ShellExecute, so it can be an exe name or a URI like "spotify:".
     // "open home" is here on purpose: whisper often hears "chrome" as "home".
     rules.push_back({{"open chrome", "launch chrome", "start chrome", "open home"},
-                     CMD_OPEN_CHROME, "Opening Chrome"});
+                     CMD_OPEN_APP, "Opening Chrome", "chrome.exe"});
+    rules.push_back({{"open spotify", "launch spotify", "open music"},
+                     CMD_OPEN_APP, "Opening Spotify", "spotify:"});
+    rules.push_back({{"open notepad", "open notes"},
+                     CMD_OPEN_APP, "Opening Notepad", "notepad.exe"});
+    rules.push_back({{"open calculator", "open calc"},
+                     CMD_OPEN_APP, "Opening Calculator", "calc.exe"});
     // "plus"/"minus" are short and easy to pronounce, so whisper hears them
     // reliably - unlike "louder"/"quieter", which it often mangles.
     rules.push_back({{"volume up", "louder", "turn it up", "plus"},
@@ -53,6 +60,7 @@ Command CommandParser::parse(const string& rawText) {
                 Command cmd;
                 cmd.type = rule.type;
                 cmd.confirmation = rule.confirmation;
+                cmd.arg = rule.arg;
                 return cmd;
             }
         }

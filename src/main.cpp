@@ -22,11 +22,14 @@ static int runParserTests() {
     struct Case {
         string text;
         int expected;
+        string expectedArg; // only checked when it is not empty
     };
     vector<Case> cases = {
-        {" Open Chrome.", CMD_OPEN_CHROME},
-        {"launch chrome", CMD_OPEN_CHROME},
-        {" Open Home.", CMD_OPEN_CHROME},
+        {" Open Chrome.", CMD_OPEN_APP, "chrome.exe"},
+        {"launch chrome", CMD_OPEN_APP, "chrome.exe"},
+        {" Open Home.", CMD_OPEN_APP, "chrome.exe"},
+        {" Open Spotify.", CMD_OPEN_APP, "spotify:"},
+        {"open calculator", CMD_OPEN_APP, "calc.exe"},
         {"LOUDER!", CMD_VOLUME_UP},
         {" Volume up.", CMD_VOLUME_UP},
         {"plus", CMD_VOLUME_UP},
@@ -49,8 +52,12 @@ static int runParserTests() {
     for (const auto& c : cases) {
         Command cmd = parser.parse(c.text);
         if (cmd.type != c.expected) {
-            cout << "FAIL: \"" << c.text << "\" -> got " << cmd.type
+            cout << "FAIL: \"" << c.text << "\" -> got type " << cmd.type
                  << ", expected " << c.expected << "\n";
+            failed++;
+        } else if (!c.expectedArg.empty() && cmd.arg != c.expectedArg) {
+            cout << "FAIL: \"" << c.text << "\" -> got arg \"" << cmd.arg
+                 << "\", expected \"" << c.expectedArg << "\"\n";
             failed++;
         }
     }

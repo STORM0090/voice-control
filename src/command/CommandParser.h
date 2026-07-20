@@ -8,11 +8,13 @@
 using namespace std;
 
 // One rule: if the spoken text contains any of these phrases,
-// it becomes this command.
+// it becomes this command. "arg" is extra data for the action,
+// for example which program to start.
 struct CommandRule {
     vector<string> phrases;
     int type;
     string confirmation;
+    string arg;
 };
 
 class CommandParser {

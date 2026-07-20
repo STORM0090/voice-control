@@ -7,7 +7,7 @@ using namespace std;
 
 enum CommandType {
     CMD_NONE,
-    CMD_OPEN_CHROME,
+    CMD_OPEN_APP,
     CMD_VOLUME_UP,
     CMD_VOLUME_DOWN,
     CMD_MUTE_TOGGLE,
