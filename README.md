@@ -11,7 +11,7 @@ decides what a command means - that part is my own code.
 
 | Say | What happens |
 | --- | --- |
-| open chrome, browser | starts Chrome |
+| google, browser, open chrome | starts Chrome |
 | open spotify, open music | starts Spotify |
 | notepad, notes | starts Notepad |
 | calculator, calc | starts Calculator |
@@ -60,7 +60,8 @@ microphone -> WASAPI capture -> VAD -> whisper.cpp -> parser -> Windows API
   most of the single word cases.
 - **The command words matter more than the code.** "louder" and "quieter" were
   misheard constantly, so the parser also accepts "plus" and "minus", which are
-  short and come back clean.
+  short and come back clean. One syllable words are the worst case: "chrome" on
+  its own kept arriving as "from" or "card", so "google" is a trigger too.
 - **The assistant heard itself.** A spoken confirmation like "Volume up" is a
   valid command, so it triggered itself in a loop. The queue is cleared after
   every reply.

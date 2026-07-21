@@ -27,6 +27,8 @@ static int runParserTests() {
         {" Open Chrome.", CMD_OPEN_APP, "chrome.exe"},
         {"launch chrome", CMD_OPEN_APP, "chrome.exe"},
         {" Open Home.", CMD_OPEN_APP, "chrome.exe"},
+        {" Google.", CMD_OPEN_APP, "chrome.exe"},
+        {"browser", CMD_OPEN_APP, "chrome.exe"},
         {" Open Spotify.", CMD_OPEN_APP, "spotify:"},
         {" Open music.", CMD_OPEN_APP, "spotify:"},
         {"open calculator", CMD_OPEN_APP, "calc.exe"},

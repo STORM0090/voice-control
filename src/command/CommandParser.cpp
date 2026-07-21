@@ -26,7 +26,9 @@ CommandParser::CommandParser() {
     // Last field goes to ShellExecute: an exe name or a URI like "spotify:".
     // Matching the app name without "open" is deliberate - whisper usually
     // gets the name right but mangles "open" ("and calculator").
-    rules.push_back({{"chrome", "browser", "open home"},
+    // "chrome" alone is one syllable and comes back as "from" or "card",
+    // so "google" and "browser" are there as clearer alternatives
+    rules.push_back({{"chrome", "google", "browser", "open home"},
                      CMD_OPEN_APP, "Opening Chrome", "chrome.exe"});
     rules.push_back({{"spotify", "open music"},
                      CMD_OPEN_APP, "Opening Spotify", "spotify:"});
