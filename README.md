@@ -1,39 +1,76 @@
 # VoiceControl
 
-A small voice assistant for Windows written in C++. It listens to the
-microphone, turns short spoken commands into text, and does simple things on
-the PC (open an app, change volume, media keys). Everything runs locally.
+A voice assistant for Windows written in C++. It listens to the microphone,
+recognizes short spoken commands and controls the PC: opens apps, changes the
+volume, skips tracks.
 
-The speech recognition uses whisper.cpp. The part that decides what a command
-means is my own code, not an AI service.
+Everything runs on the machine. There are no cloud calls and no AI service
+decides what a command means - that part is my own code.
+
+## Commands
+
+| Say | What happens |
+| --- | --- |
+| open chrome, browser | starts Chrome |
+| open spotify, open music | starts Spotify |
+| notepad, notes | starts Notepad |
+| calculator, calc | starts Calculator |
+| plus, volume up, louder | volume up |
+| minus, volume down, quieter | volume down |
+| mute, unmute | mute on/off |
+| next track, skip | next track |
+| previous track, go back | previous track |
+| play, pause | play/pause |
 
 ## How it works
 
-The audio goes through a few steps:
+```
+microphone -> WASAPI capture -> VAD -> whisper.cpp -> parser -> Windows API
+                 (thread)              (GPU)                     + voice reply
+```
 
-1. Audio capture (WASAPI) on a background thread
-2. Voice activity detection (my own energy-based check)
-3. Speech to text (whisper.cpp, `base.en` model, CUDA)
-4. Command parser (keyword matching, my own code)
-5. Actions (Windows API: ShellExecute, media/volume keys)
-6. Voice reply (Windows SAPI)
+1. **Audio capture** (`src/audio`) - WASAPI records the default microphone on a
+   background thread, mixes it to mono and resamples it to the 16 kHz that
+   whisper expects. Frames are handed to the main thread through a small
+   thread-safe queue.
+2. **Voice activity detection** (`src/vad`) - my own algorithm. It measures the
+   energy of every 20 ms frame and runs a two state machine: five loud frames in
+   a row start a phrase, twenty quiet ones end it. Using different thresholds for
+   starting and stopping keeps it from flickering on short pauses between words.
+3. **Speech to text** (`src/stt`) - whisper.cpp with the `base.en` model. On a
+   GTX 1660 SUPER a command takes about 350 ms on the GPU against 1100 ms on the
+   CPU.
+4. **Command parser** (`src/command`) - my own code, no AI. Rules live in a
+   table, so a new command is one line. `VoiceControl.exe --test` runs the
+   parser against recorded whisper output.
+5. **Actions** (`src/action`) - `ShellExecute` for apps, `SendInput` with the
+   media and volume keys for everything else.
+6. **Voice reply** (`src/tts`) - Windows SAPI says a short confirmation.
 
-## Progress
+## Things that turned out to be tricky
 
-- [x] Stage 1 - audio capture, shows a live volume bar
-- [x] Stage 2 - voice activity detection (finds where speech starts and ends)
-- [x] Stage 3 - speech to text with whisper.cpp (CPU or CUDA)
-- [x] Stage 4 - command parser (keyword rules, `--test` runs its checks)
-- [x] Stage 5 - actions (open Chrome, media keys, volume, mute)
-- [x] Stage 6 - voice reply with Windows SAPI
+- **Whisper hears context, not single words.** Isolated words came back wrong
+  ("chrome" as "Rome", "spotify" as "fortify"), while "open chrome" was correct
+  almost every time - whisper is a language model and uses the surrounding
+  words. Feeding it the list of known commands through `initial_prompt` fixed
+  most of the single word cases.
+- **The command words matter more than the code.** "louder" and "quieter" were
+  misheard constantly, so the parser also accepts "plus" and "minus", which are
+  short and come back clean.
+- **The assistant heard itself.** A spoken confirmation like "Volume up" is a
+  valid command, so it triggered itself in a loop. The queue is cleared after
+  every reply.
+- **`std::byte` clashes with the Windows `byte` type**, so the Windows headers
+  have to be included before `using namespace std;`.
 
 ## Build
 
-Needs CMake and a C++17 compiler (Visual Studio 2022 with the C++ workload).
+Needs CMake and a C++17 compiler (Visual Studio with the C++ workload).
 
-whisper.cpp is included as a git submodule, so clone with `--recurse-submodules`,
-or run `git submodule update --init` after a normal clone. You also need the
-`base.en` model from https://huggingface.co/ggerganov/whisper.cpp in `models/`.
+whisper.cpp is a git submodule, so clone with `--recurse-submodules`, or run
+`git submodule update --init` afterwards. The `base.en` model goes into
+`models/` and can be downloaded from
+https://huggingface.co/ggerganov/whisper.cpp
 
 ```
 cmake -S . -B build
@@ -41,7 +78,5 @@ cmake --build build --config Release
 build\Release\VoiceControl.exe
 ```
 
-With an NVIDIA GPU and the CUDA Toolkit installed, add `-DGGML_CUDA=ON` to the
-first cmake command to run the speech recognition on the GPU.
-
-Speak a short command and it gets printed as text with the recognition time.
+For GPU speech recognition, install the CUDA Toolkit and add `-DGGML_CUDA=ON`
+to the first command.
