@@ -16,13 +16,12 @@
 
 using namespace std;
 
-// Quick check that the parser understands typical whisper output.
 // Run with: VoiceControl.exe --test
 static int runParserTests() {
     struct Case {
         string text;
         int expected;
-        string expectedArg; // only checked when it is not empty
+        string expectedArg; // checked only when set
     };
     vector<Case> cases = {
         {" Open Chrome.", CMD_OPEN_APP, "chrome.exe"},
@@ -68,8 +67,7 @@ static int runParserTests() {
     return failed == 0 ? 0 : 1;
 }
 
-// The exe can be started from the project root or from build\Release,
-// so look for the model in a few places.
+// the exe may be started from the project root or from build\Release
 static string findModel() {
     vector<string> candidates = {
         "models/ggml-base.en.bin",
@@ -104,7 +102,6 @@ int main(int argc, char** argv) {
         Speaker speaker;
         bool wasSpeaking = false;
 
-        // The recognizer works better when it knows what to listen for.
         transcriber.setPrompt(parser.vocabulary());
 
         cout << "Listening... speak into the microphone (Ctrl+C to quit).\n";
@@ -136,9 +133,8 @@ int main(int argc, char** argv) {
                 } else if (executor.execute(cmd)) {
                     cout << "  -> " << cmd.confirmation << "\n";
                     speaker.say(cmd.confirmation);
-                    // The mic hears the assistant talking, and a confirmation
-                    // like "Volume up" is a command itself. Drop those frames
-                    // so it does not react to its own voice.
+                    // a confirmation like "Volume up" is itself a command,
+                    // so drop what the mic picked up while we were talking
                     frames.clear();
                 } else {
                     cout << "  -> recognized, but not executed\n";

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Changes the sample rate of an audio stream, e.g. 48000 -> 16000.
+// Changes the sample rate, e.g. 48000 -> 16000. Keeps state between calls.
 class Resampler {
 public:
     Resampler(int inputRate, int outputRate);

@@ -1,4 +1,3 @@
-// windows.h first, before headers that use "using namespace std;".
 #include <windows.h>
 #include <objbase.h>
 #include <sapi.h>
@@ -30,8 +29,7 @@ void Speaker::say(const string& text) {
     if (voice == nullptr) {
         return;
     }
-    // SAPI takes wide strings and our confirmations are plain ASCII,
-    // so widening character by character is enough.
+    // SAPI wants wide strings; our confirmations are plain ASCII
     wstring wide(text.begin(), text.end());
-    voice->Speak(wide.c_str(), 0, nullptr); // 0 = return only when it finished
+    voice->Speak(wide.c_str(), 0, nullptr); // 0 = return only when finished
 }

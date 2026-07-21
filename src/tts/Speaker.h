@@ -5,10 +5,9 @@
 
 using namespace std;
 
-// Declared here so this header does not have to include sapi.h.
-struct ISpVoice;
+struct ISpVoice; // avoids including sapi.h here
 
-// Says short confirmations out loud with the voice built into Windows.
+// Speaks short confirmations with the built-in Windows voice.
 class Speaker {
 public:
     Speaker();

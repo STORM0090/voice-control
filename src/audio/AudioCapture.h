@@ -8,8 +8,7 @@
 
 using namespace std;
 
-// Records the default microphone on a background thread and pushes
-// mono 16 kHz frames into the given queue.
+// Records the microphone on a background thread, pushes mono 16 kHz frames.
 class AudioCapture {
 public:
     AudioCapture(ThreadSafeQueue<vector<float>>& output);

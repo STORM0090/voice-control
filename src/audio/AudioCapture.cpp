@@ -13,7 +13,6 @@
 
 using namespace std;
 
-// WASAPI calls return an HRESULT; throw a readable error if one fails.
 static void check(HRESULT hr, const char* what) {
     if (FAILED(hr)) {
         throw runtime_error(string("WASAPI error in ") + what);
@@ -60,7 +59,6 @@ void AudioCapture::run() {
           "Activate");
     check(audioClient->GetMixFormat(&format), "GetMixFormat");
 
-    // Shared mode normally gives 32-bit float samples; bail out if not.
     bool isFloat = (format->wFormatTag == WAVE_FORMAT_IEEE_FLOAT) ||
                    (format->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
                     format->wBitsPerSample == 32);
@@ -71,7 +69,6 @@ void AudioCapture::run() {
     int deviceRate = format->nSamplesPerSec;
     int channels = format->nChannels;
 
-    // Event mode: Windows signals us whenever new audio is ready to read.
     REFERENCE_TIME bufferDuration = 10000000; // 1 second in 100-ns units
     check(audioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
                                   AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
@@ -99,7 +96,6 @@ void AudioCapture::run() {
             DWORD flags = 0;
             captureClient->GetBuffer(&data, &numFrames, &flags, nullptr, nullptr);
 
-            // Mix all channels into one mono value per sample.
             vector<float> mono;
             mono.reserve(numFrames);
             if (flags & AUDCLNT_BUFFERFLAGS_SILENT) {

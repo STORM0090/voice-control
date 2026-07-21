@@ -14,7 +14,7 @@ vector<float> Resampler::process(const vector<float>& input) {
 
     vector<float> output;
 
-    // Move through the buffer in steps and interpolate between two samples.
+    // step through the buffer, interpolating between neighbouring samples
     while (pos + 1.0 < (double)buffer.size()) {
         int i = (int)pos;
         double frac = pos - i;
@@ -23,7 +23,6 @@ vector<float> Resampler::process(const vector<float>& input) {
         pos += step;
     }
 
-    // Drop the samples we are done with, keep the rest for next time.
     int consumed = (int)pos;
     if (consumed > 0) {
         buffer.erase(buffer.begin(), buffer.begin() + consumed);

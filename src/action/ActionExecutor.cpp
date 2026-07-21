@@ -6,17 +6,14 @@
 
 using namespace std;
 
-// "what" is an exe name that Windows can find (through the App Paths
-// registry key or PATH), or a URI like "spotify:" that an app registered.
+// "what" is an exe name (found via App Paths or PATH) or a URI like "spotify:"
 static bool openApp(const string& what) {
     HINSTANCE result = ShellExecuteA(nullptr, "open", what.c_str(),
                                      nullptr, nullptr, SW_SHOWNORMAL);
-    // ShellExecute returns a value > 32 on success (old API convention).
-    return (INT_PTR)result > 32;
+    return (INT_PTR)result > 32; // old API convention: > 32 means success
 }
 
-// Taps a key once (press + release). Media keys like VK_MEDIA_NEXT_TRACK
-// are handled system-wide, so this controls whatever player is running.
+// press + release; Windows routes media keys to whatever player is running
 static bool tapKey(WORD vk) {
     INPUT inputs[2] = {};
     inputs[0].type = INPUT_KEYBOARD;
@@ -27,8 +24,7 @@ static bool tapKey(WORD vk) {
     return SendInput(2, inputs, sizeof(INPUT)) == 2;
 }
 
-// One press of the volume key changes it by about 2%, which is barely
-// audible, so repeat it a few times for a noticeable step.
+// one press moves the volume by ~2%, too little to hear
 static bool tapKeyTimes(WORD vk, int times) {
     for (int i = 0; i < times; i++) {
         if (!tapKey(vk)) {
@@ -55,6 +51,6 @@ bool ActionExecutor::execute(const Command& cmd) {
     case CMD_MUTE_TOGGLE:
         return tapKey(VK_VOLUME_MUTE);
     default:
-        return false; // every command is handled now
+        return false;
     }
 }

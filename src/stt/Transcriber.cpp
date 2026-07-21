@@ -25,7 +25,7 @@ void Transcriber::setPrompt(const string& text) {
 }
 
 string Transcriber::transcribe(const vector<float>& audio) {
-    // whisper does not like very short clips, so pad quiet audio up to 1 second.
+    // whisper does badly on very short clips, so pad up to 1 second
     vector<float> input = audio;
     if (input.size() < 16000) {
         input.resize(16000, 0.0f);
@@ -36,14 +36,12 @@ string Transcriber::transcribe(const vector<float>& audio) {
     params.n_threads = 4;
     params.translate = false;
     params.no_timestamps = true;
-    params.single_segment = true; // commands are short, one segment is enough
+    params.single_segment = true;
     params.print_progress = false;
     params.print_realtime = false;
     params.print_timestamps = false;
     params.print_special = false;
     if (!prompt.empty()) {
-        // Short isolated words are easy to misread, so give whisper the
-        // list of words we actually expect.
         params.initial_prompt = prompt.c_str();
     }
 

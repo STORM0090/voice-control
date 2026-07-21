@@ -5,9 +5,8 @@
 
 using namespace std;
 
-// Voice activity detection.
-// Feed it one frame at a time. It returns an empty vector while nothing useful
-// happened, and returns the whole phrase once a spoken segment has finished.
+// Feed it one frame at a time. Returns the whole phrase once it ends,
+// an empty vector otherwise.
 class Vad {
 public:
     Vad();
@@ -17,8 +16,8 @@ public:
 
 private:
     int state;
-    int speechRun;   // loud frames in a row
-    int silenceRun;  // quiet frames in a row
+    int speechRun;
+    int silenceRun;
     vector<float> segment;
 };
 

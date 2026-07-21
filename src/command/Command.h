@@ -18,8 +18,8 @@ enum CommandType {
 
 struct Command {
     int type = CMD_NONE;
-    string arg;          // extra data for the action, e.g. a path
-    string confirmation; // what the assistant says back after executing
+    string arg;          // what to open, for CMD_OPEN_APP
+    string confirmation; // spoken back after the command runs
 };
 
 #endif

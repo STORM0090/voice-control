@@ -7,9 +7,7 @@
 
 using namespace std;
 
-// One rule: if the spoken text contains any of these phrases,
-// it becomes this command. "arg" is extra data for the action,
-// for example which program to start.
+// If the text contains any of these phrases, it becomes this command.
 struct CommandRule {
     vector<string> phrases;
     int type;
@@ -22,7 +20,7 @@ public:
     CommandParser();
     Command parse(const string& rawText);
 
-    // All trigger phrases in one string, to hint the speech recognizer.
+    // all trigger phrases in one string, used to hint whisper
     string vocabulary() const;
 
 private:

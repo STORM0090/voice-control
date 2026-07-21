@@ -4,11 +4,9 @@
 
 using namespace std;
 
-// Tuning knobs. Raise the threshold if silence triggers speech, lower it if
-// your voice is missed. The frame counts assume ~20 ms frames.
-static const float kEnergyThreshold = 0.02f; // loudness that counts as speech
-static const int kStartFrames = 5;           // ~100 ms of sound to start
-static const int kEndFrames = 20;            // ~400 ms of silence to stop
+static const float kEnergyThreshold = 0.02f;
+static const int kStartFrames = 5;  // ~100 ms of sound to start
+static const int kEndFrames = 20;   // ~400 ms of silence to stop
 
 enum { SILENCE, SPEECH };
 
@@ -38,12 +36,13 @@ vector<float> Vad::process(const vector<float>& frame) {
     if (state == SILENCE) {
         if (loud) {
             speechRun++;
+            // collect from the first loud frame so the start is not cut off
             for (const auto& s : frame) {
-                segment.push_back(s); // keep it in case this becomes real speech
+                segment.push_back(s);
             }
         } else {
             speechRun = 0;
-            segment.clear();          // false alarm, drop what we collected
+            segment.clear();
         }
 
         if (speechRun >= kStartFrames) {
@@ -53,7 +52,6 @@ vector<float> Vad::process(const vector<float>& frame) {
         return {};
     }
 
-    // state == SPEECH: keep collecting until it stays quiet long enough.
     for (const auto& s : frame) {
         segment.push_back(s);
     }

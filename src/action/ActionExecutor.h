@@ -5,11 +5,10 @@
 
 using namespace std;
 
-// Carries out a parsed command using the Windows API.
+// Carries out a parsed command through the Windows API.
 class ActionExecutor {
 public:
-    // Returns false if the command is not implemented or failed.
-    bool execute(const Command& cmd);
+    bool execute(const Command& cmd); // false if it did not run
 };
 
 #endif

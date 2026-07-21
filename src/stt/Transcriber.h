@@ -6,10 +6,9 @@
 
 using namespace std;
 
-// Declared here so this header does not have to include whisper.h.
-struct whisper_context;
+struct whisper_context; // avoids including whisper.h here
 
-// Turns recorded audio into text using whisper.cpp.
+// Turns recorded audio into text with whisper.cpp.
 class Transcriber {
 public:
     Transcriber(const string& modelPath);
@@ -17,7 +16,7 @@ public:
 
     string transcribe(const vector<float>& audio);
 
-    // Words whisper should expect. Nudges it towards our commands.
+    // words to expect, nudges whisper towards our commands
     void setPrompt(const string& text);
 
 private:

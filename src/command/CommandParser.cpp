@@ -4,9 +4,8 @@
 
 using namespace std;
 
-// whisper output looks like " Open Chrome. " - capitals, punctuation, spaces.
-// Turn it into " open chrome " so phrases are easy to find. The surrounding
-// spaces let us match whole words only ("track" does not match "soundtrack").
+// " Open Chrome. " -> " open chrome ". The outer spaces make the search
+// match whole words only, so "track" does not hit "soundtrack".
 static string normalize(const string& raw) {
     string out = " ";
     for (const auto& ch : raw) {
@@ -24,12 +23,9 @@ static string normalize(const string& raw) {
 }
 
 CommandParser::CommandParser() {
-    // Adding an app is one line here. The last field is passed to
-    // ShellExecute, so it can be an exe name or a URI like "spotify:".
-    // Matching on the app name alone, without "open", is on purpose:
-    // whisper often gets the name right but turns "open" into something
-    // else ("and calculator", "loves potify").
-    // "open home" is a fallback: whisper often hears "chrome" as "home".
+    // Last field goes to ShellExecute: an exe name or a URI like "spotify:".
+    // Matching the app name without "open" is deliberate - whisper usually
+    // gets the name right but mangles "open" ("and calculator").
     rules.push_back({{"chrome", "browser", "open home"},
                      CMD_OPEN_APP, "Opening Chrome", "chrome.exe"});
     rules.push_back({{"spotify", "open music"},
@@ -38,8 +34,7 @@ CommandParser::CommandParser() {
                      CMD_OPEN_APP, "Opening Notepad", "notepad.exe"});
     rules.push_back({{"calculator", "calc"},
                      CMD_OPEN_APP, "Opening Calculator", "calc.exe"});
-    // "plus"/"minus" are short and easy to pronounce, so whisper hears them
-    // reliably - unlike "louder"/"quieter", which it often mangles.
+    // "plus"/"minus" are short, whisper hears them far better than "louder"
     rules.push_back({{"volume up", "louder", "turn it up", "plus"},
                      CMD_VOLUME_UP, "Volume up"});
     rules.push_back({{"volume down", "quieter", "turn it down", "minus"},
@@ -69,7 +64,7 @@ Command CommandParser::parse(const string& rawText) {
         }
     }
 
-    return Command(); // type stays CMD_NONE
+    return Command();
 }
 
 string CommandParser::vocabulary() const {
