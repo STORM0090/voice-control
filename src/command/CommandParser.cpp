@@ -47,6 +47,11 @@ CommandParser::CommandParser() {
                      CMD_PREV_TRACK, "Previous track"});
     rules.push_back({{"play", "pause", "resume", "stop music"},
                      CMD_PLAY_PAUSE, "Playback toggled"});
+    rules.push_back({{"show desktop", "minimize"},
+                     CMD_SHOW_DESKTOP, "Showing desktop"});
+    // two words on purpose: locking on a stray "lock" would be annoying
+    rules.push_back({{"lock screen", "lock the computer"},
+                     CMD_LOCK_SCREEN, "Locking the screen"});
 }
 
 Command CommandParser::parse(const string& rawText) {

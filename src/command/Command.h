@@ -14,6 +14,8 @@ enum CommandType {
     CMD_NEXT_TRACK,
     CMD_PREV_TRACK,
     CMD_PLAY_PAUSE,
+    CMD_SHOW_DESKTOP,
+    CMD_LOCK_SCREEN,
 };
 
 struct Command {

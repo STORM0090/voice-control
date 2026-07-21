@@ -44,6 +44,10 @@ static int runParserTests() {
         {" Previous song.", CMD_PREV_TRACK},
         {" Play.", CMD_PLAY_PAUSE},
         {"pause", CMD_PLAY_PAUSE},
+        {" Show desktop.", CMD_SHOW_DESKTOP},
+        {"minimize", CMD_SHOW_DESKTOP},
+        {" Lock screen.", CMD_LOCK_SCREEN},
+        {"lock", CMD_NONE},               // one word must not lock the PC
         {" soundtrack ", CMD_NONE},       // "track" inside a word must not match
         {" Change music.", CMD_NONE},
         {"", CMD_NONE},

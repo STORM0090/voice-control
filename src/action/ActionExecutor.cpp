@@ -24,6 +24,21 @@ static bool tapKey(WORD vk) {
     return SendInput(2, inputs, sizeof(INPUT)) == 2;
 }
 
+// modifier down, key down, key up, modifier up
+static bool tapKeyWith(WORD modifier, WORD vk) {
+    INPUT inputs[4] = {};
+    for (int i = 0; i < 4; i++) {
+        inputs[i].type = INPUT_KEYBOARD;
+    }
+    inputs[0].ki.wVk = modifier;
+    inputs[1].ki.wVk = vk;
+    inputs[2].ki.wVk = vk;
+    inputs[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    inputs[3].ki.wVk = modifier;
+    inputs[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    return SendInput(4, inputs, sizeof(INPUT)) == 4;
+}
+
 // one press moves the volume by ~2%, too little to hear
 static bool tapKeyTimes(WORD vk, int times) {
     for (int i = 0; i < times; i++) {
@@ -50,6 +65,10 @@ bool ActionExecutor::execute(const Command& cmd) {
         return tapKeyTimes(VK_VOLUME_DOWN, 5);
     case CMD_MUTE_TOGGLE:
         return tapKey(VK_VOLUME_MUTE);
+    case CMD_SHOW_DESKTOP:
+        return tapKeyWith(VK_LWIN, 'D');
+    case CMD_LOCK_SCREEN:
+        return LockWorkStation() != 0;
     default:
         return false;
     }
