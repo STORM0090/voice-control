@@ -1,12 +1,17 @@
 #include "vad/Vad.h"
+#include "common/AudioTypes.h"
 
 #include <cmath>
 
 using namespace std;
 
 static const float kEnergyThreshold = 0.02f;
-static const int kStartFrames = 5;  // ~100 ms of sound to start
-static const int kEndFrames = 20;   // ~400 ms of silence to stop
+static const int kStartFrames = 3;   // ~60 ms of sound to start
+static const int kEndFrames = 20;    // ~400 ms of silence to stop
+
+// Consonants like "ch" or "s" are quiet and fall below the threshold, so the
+// audio just before a phrase is kept and put back in front of it.
+static const int kPreRollSamples = kSampleRate / 10; // 100 ms
 
 enum { SILENCE, SPEECH };
 
@@ -35,14 +40,22 @@ vector<float> Vad::process(const vector<float>& frame) {
 
     if (state == SILENCE) {
         if (loud) {
+            if (speechRun == 0) {
+                segment = preRoll;
+            }
             speechRun++;
-            // collect from the first loud frame so the start is not cut off
             for (const auto& s : frame) {
                 segment.push_back(s);
             }
         } else {
             speechRun = 0;
             segment.clear();
+            for (const auto& s : frame) {
+                preRoll.push_back(s);
+            }
+            if ((int)preRoll.size() > kPreRollSamples) {
+                preRoll.erase(preRoll.begin(), preRoll.end() - kPreRollSamples);
+            }
         }
 
         if (speechRun >= kStartFrames) {

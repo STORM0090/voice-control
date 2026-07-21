@@ -19,6 +19,7 @@ private:
     int speechRun;
     int silenceRun;
     vector<float> segment;
+    vector<float> preRoll;
 };
 
 #endif

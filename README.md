@@ -21,6 +21,8 @@ decides what a command means - that part is my own code.
 | next track, skip | next track |
 | previous track, go back | previous track |
 | play, pause | play/pause |
+| show desktop, minimize | minimizes all windows |
+| lock screen | locks the PC |
 
 ## How it works
 
@@ -34,9 +36,11 @@ microphone -> WASAPI capture -> VAD -> whisper.cpp -> parser -> Windows API
    whisper expects. Frames are handed to the main thread through a small
    thread-safe queue.
 2. **Voice activity detection** (`src/vad`) - my own algorithm. It measures the
-   energy of every 20 ms frame and runs a two state machine: five loud frames in
+   energy of every 20 ms frame and runs a two state machine: three loud frames in
    a row start a phrase, twenty quiet ones end it. Using different thresholds for
    starting and stopping keeps it from flickering on short pauses between words.
+   The last 100 ms before a phrase are kept and put back in front of it, because
+   quiet consonants at the start would otherwise be cut off.
 3. **Speech to text** (`src/stt`) - whisper.cpp with the `base.en` model. On a
    GTX 1660 SUPER a command takes about 350 ms on the GPU against 1100 ms on the
    CPU.
