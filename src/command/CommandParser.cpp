@@ -36,6 +36,11 @@ CommandParser::CommandParser() {
                      CMD_OPEN_APP, "Opening Notepad", "notepad.exe"});
     rules.push_back({{"calculator", "calc"},
                      CMD_OPEN_APP, "Opening Calculator", "calc.exe"});
+    // exact levels first, so "max volume" is not eaten by the rules below
+    rules.push_back({{"max volume", "full volume"},
+                     CMD_SET_VOLUME, "Volume at maximum", "100"});
+    rules.push_back({{"half volume"},
+                     CMD_SET_VOLUME, "Volume at half", "50"});
     // "plus"/"minus" are short, whisper hears them far better than "louder"
     rules.push_back({{"volume up", "louder", "turn it up", "plus"},
                      CMD_VOLUME_UP, "Volume up"});

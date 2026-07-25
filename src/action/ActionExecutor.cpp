@@ -39,16 +39,6 @@ static bool tapKeyWith(WORD modifier, WORD vk) {
     return SendInput(4, inputs, sizeof(INPUT)) == 4;
 }
 
-// one press moves the volume by ~2%, too little to hear
-static bool tapKeyTimes(WORD vk, int times) {
-    for (int i = 0; i < times; i++) {
-        if (!tapKey(vk)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 bool ActionExecutor::execute(const Command& cmd) {
     switch (cmd.type) {
     case CMD_OPEN_APP:
@@ -60,9 +50,11 @@ bool ActionExecutor::execute(const Command& cmd) {
     case CMD_PLAY_PAUSE:
         return tapKey(VK_MEDIA_PLAY_PAUSE);
     case CMD_VOLUME_UP:
-        return tapKeyTimes(VK_VOLUME_UP, 5);
+        return volume.changeBy(10);
     case CMD_VOLUME_DOWN:
-        return tapKeyTimes(VK_VOLUME_DOWN, 5);
+        return volume.changeBy(-10);
+    case CMD_SET_VOLUME:
+        return volume.setPercent(atoi(cmd.arg.c_str()));
     case CMD_MUTE_TOGGLE:
         return tapKey(VK_VOLUME_MUTE);
     case CMD_SHOW_DESKTOP:

@@ -39,6 +39,8 @@ static int runParserTests() {
         {"plus", CMD_VOLUME_UP},
         {"quieter", CMD_VOLUME_DOWN},
         {"minus", CMD_VOLUME_DOWN},
+        {" Max volume.", CMD_SET_VOLUME, "100"},
+        {"half volume", CMD_SET_VOLUME, "50"},
         {" Mute.", CMD_MUTE_TOGGLE},
         {"unmute", CMD_MUTE_TOGGLE},
         {" Next track.", CMD_NEXT_TRACK},

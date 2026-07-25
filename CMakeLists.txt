@@ -18,6 +18,7 @@ add_executable(VoiceControl
     src/stt/Transcriber.cpp
     src/command/CommandParser.cpp
     src/action/ActionExecutor.cpp
+    src/action/VolumeControl.cpp
     src/tts/Speaker.cpp
 )
 

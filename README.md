@@ -13,8 +13,10 @@ decides what a command means - that part is my own code.
 - open spotify, open music - starts Spotify
 - notepad, notes - starts Notepad
 - calculator, calc - starts Calculator
-- plus, volume up, louder - volume up
-- minus, volume down, quieter - volume down
+- plus, volume up, louder - volume up by 10 percent
+- minus, volume down, quieter - volume down by 10 percent
+- max volume, full volume - volume to 100 percent
+- half volume - volume to 50 percent
 - mute, unmute - mute on and off
 - next track, skip - next track
 - previous track, go back - previous track
@@ -45,8 +47,10 @@ model. On a GTX 1660 SUPER a command takes about 350 ms on the GPU against
 table, so adding a command is one line. Running VoiceControl.exe --test checks
 the parser against real whisper output.
 
-5. Actions, in src/action. ShellExecute starts apps, SendInput presses the media
-and volume keys.
+5. Actions, in src/action. ShellExecute starts apps and SendInput presses the
+media keys. The volume goes through the Core Audio API instead, because one
+press of a volume key moves it by about two percent, which is too coarse to set
+a level like fifty percent.
 
 6. Voice reply, in src/tts. Windows SAPI says a short confirmation.
 

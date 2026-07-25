@@ -10,6 +10,7 @@ enum CommandType {
     CMD_OPEN_APP,
     CMD_VOLUME_UP,
     CMD_VOLUME_DOWN,
+    CMD_SET_VOLUME,
     CMD_MUTE_TOGGLE,
     CMD_NEXT_TRACK,
     CMD_PREV_TRACK,
