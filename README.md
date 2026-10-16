@@ -112,6 +112,4 @@ VoiceControl.exe --test runs 31 checks of the parser and exits with code 1 if an
 - Load the command table from a file instead of the source code.
 - A wake word, so that normal speech does not trigger commands.
 
-## License
-
-MIT License, see [LICENSE](LICENSE). Copyright (c) 2026 Yehor Vorobiov.
+Yehor Vorobiov
