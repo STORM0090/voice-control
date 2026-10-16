@@ -5,6 +5,7 @@ Offline voice assistant for Windows in C++: it listens to the microphone, recogn
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C)
 ![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D6)
+![build](https://github.com/STORM0090/voice-control/actions/workflows/build.yml/badge.svg)
 
 ![Console output while saying commands](docs/demo.gif)
 
