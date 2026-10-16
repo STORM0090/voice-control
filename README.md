@@ -114,4 +114,4 @@ VoiceControl.exe --test runs 31 checks of the parser and exits with code 1 if an
 
 ## License
 
-MIT, see LICENSE. whisper.cpp (MIT) is included as a git submodule. The base.en model comes from the OpenAI Whisper release and is listed as MIT on its Hugging Face page.
+MIT License, see [LICENSE](LICENSE). Copyright (c) 2026 Yehor Vorobiov.
